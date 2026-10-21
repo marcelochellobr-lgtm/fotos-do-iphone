@@ -1,0 +1,69 @@
+FOTOS DO IPHONE
+Ver, copiar para o PC e apagar do iPhone as suas fotos e vídeos, com conferência.
+Feito por Marcelo Chello (youtube.com/@marcelochello), com ajuda de IA. Gratuito, código aberto.
+
+
+COMO USAR
+1. Descompacte esta pasta onde quiser (ex.: Documentos). Não precisa instalar nada.
+2. Conecte o iPhone no cabo, desbloqueie e toque em "Confiar" se ele perguntar.
+3. Dê dois cliques em "Abrir Fotos do iPhone.bat".
+   Abre uma janela preta (é o app ligado) e, em seguida, a tela no seu navegador.
+4. Para desligar, feche a janela preta.
+
+Opcional: "Criar atalho na Area de Trabalho.bat" põe um atalho com ícone na sua Área de Trabalho.
+
+Na primeira vez, o Windows pode mostrar "O Windows protegeu o computador". Isso aparece para
+arquivos baixados da internet sem assinatura de empresa. Clique em "Mais informações" e depois
+em "Executar assim mesmo".
+
+
+O QUE TEM NESTA PASTA
+Abrir Fotos do iPhone.bat ........ o botão de ligar. É texto: abra no Bloco de Notas e leia.
+Criar atalho na Area de Trabalho.bat  opcional, só cria o atalho.
+app\ ............................. o app, em texto legível:
+    app.py ....................... o "cérebro": lê, copia, confere e apaga
+    iphone.py .................... conversa com o iPhone, pelo próprio Windows
+    miniatura.py ................. pede ao Windows as miniaturas das fotos
+    escolher_pasta.py ............ abre a janela do Windows para escolher pasta
+    index.html ................... a tela que aparece no navegador
+    icone.ico .................... o ícone
+python\ .......................... o Python oficial (python.org), versão portátil, assinado
+                                   digitalmente pela Python Software Foundation. Roda daqui
+                                   de dentro e não se instala no Windows. Traz junto:
+    Flask ........................ monta a tela no navegador, só para este computador
+    pywin32 e comtypes ........... deixam o Python conversar com o Windows
+    Pillow ....................... prepara as miniaturas
+dados\ ........................... aparece quando você usa. Fica só aqui:
+    registro.json ................ quais fotos já têm cópia conferida no PC, e onde
+    apagados.csv ................. histórico do que saiu do iPhone e onde ficou a cópia
+    cache\ ....................... miniaturas (as fotos grandes são apagadas ao fechar)
+
+
+SEGURANÇA, SEM LETRA MIÚDA
+- Não usa internet. O app só funciona dentro do seu computador, no endereço 127.0.0.1, que
+  nenhum outro aparelho (nem da sua casa) consegue acessar. Pode testar com o Wi-Fi desligado.
+- Não instala nada, não pede senha de administrador, não mexe no registro do Windows e não fica
+  rodando escondido: só funciona com a janela preta aberta.
+- Para desinstalar, apague esta pasta (e o atalho, se criou).
+- O risco real é o propósito do app: apagar fotos. Por isso ele só apaga o que tem cópia no PC
+  com o mesmo nome e o mesmo tamanho exato, e confere de novo na hora de apagar.
+- APAGAR POR AQUI É DEFINITIVO: não vai para "Apagados recentemente" do iPhone.
+  Teste primeiro com uma foto só.
+- Se o Fotos do iCloud estiver ligado no iPhone, apagar no aparelho apaga também no iCloud.
+
+
+SE O IPHONE NÃO APARECER
+- Desbloqueie a tela e confira se ele pediu "Confiar neste computador".
+- Abra o Explorador de Arquivos: se o "Apple iPhone" não aparece em "Este Computador", falta o
+  driver da Apple. Instale o app gratuito "Apple Devices" da Microsoft Store e conecte de novo.
+- No iPhone, em Ajustes > Apps > Fotos > "Transferir para Mac ou PC", escolha
+  "Manter originais". No modo "Automático" o iPhone converte as fotos durante a cópia, o tamanho
+  muda e o app não consegue conferir (por segurança, ele não libera para apagar).
+
+
+REQUISITOS
+Windows 10 ou 11, 64 bits. Um iPhone por vez. Navegador Chrome ou Edge.
+
+
+Código-fonte: https://github.com/marcelochellobr-lgtm/fotos-do-iphone
+Licença MIT (veja LICENSE): use, copie e modifique à vontade; vem sem garantia.

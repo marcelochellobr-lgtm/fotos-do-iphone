@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fotos do iPhone</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root {
+    --fundo: #141416; --painel: #1d1d20; --borda: #2e2e33; --texto: #ececef; --suave: #9a9aa3;
+    --azul: #3d8bfd; --verde: #33c27f; --amarelo: #e8b339; --vermelho: #e5484d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 14px/1.4 "Segoe UI", system-ui, sans-serif; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--borda); background: #2a2a2f; color: var(--texto); padding: 7px 14px; }
+  button:hover:not(:disabled) { background: #34343a; }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primario { background: var(--azul); border-color: var(--azul); color: #fff; }
+  button.perigo { background: var(--vermelho); border-color: var(--vermelho); color: #fff; }
+  button.seg { padding: 5px 11px; border-radius: 0; margin-left: -1px; }
+  button.seg:first-child { border-radius: 8px 0 0 8px; } button.seg:last-child { border-radius: 0 8px 8px 0; }
+  button.seg.ativo { background: #3a3a42; border-color: #55555e; position: relative; }
+
+  header { position: sticky; top: 0; z-index: 5; background: var(--fundo); border-bottom: 1px solid var(--borda); padding: 12px 20px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+  header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  .aparelho { color: var(--suave); font-size: 13px; }
+  .aparelho b.on { color: var(--verde); } .aparelho b.off { color: var(--vermelho); }
+  .espaco { width: 100%; }
+  .esp-topo { display: flex; gap: 12px; align-items: baseline; font-size: 13px; color: var(--suave); margin-bottom: 6px; }
+  .esp-topo b { color: var(--texto); font-weight: 600; font-size: 14px; }
+  .esp-barra { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; background: transparent; }
+  .esp-barra div { height: 100%; min-width: 3px; }
+  .esp-barra .livre { background: transparent; box-shadow: inset 0 0 0 1px #4a4a52; border-radius: 0 4px 4px 0; }
+  .esp-barra .previa { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(255,255,255,.55) 4px 6px); }
+  .esp-legenda { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 6px; font-size: 13px; color: var(--suave); }
+  .esp-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .esp-legenda b { color: var(--texto); font-weight: 600; }
+  .esp-legenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .esp-legenda i.livre { box-shadow: inset 0 0 0 1px #6a6a74; }
+  .filtros { width: 100%; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .filtros .grupo { display: flex; }
+  .filtros label { color: var(--suave); font-size: 13px; margin-right: 6px; align-self: center; }
+  .filtros .acoes { margin-left: auto; display: flex; gap: 8px; }
+
+  .corpo { display: flex; }
+  nav { width: 230px; flex: none; position: sticky; top: var(--topo, 170px); height: calc(100vh - var(--topo, 170px) - 64px); overflow-y: auto; border-right: 1px solid var(--borda); padding: 8px 0; }
+  nav a { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 16px; color: var(--texto); text-decoration: none; font-size: 13px; }
+  nav a:hover { background: var(--painel); }
+  nav a .n { margin-left: auto; color: var(--suave); font-size: 12px; text-align: right; }
+  .bolinha { width: 8px; height: 8px; border-radius: 50%; flex: none; background: #555; }
+  .bolinha.pc { background: var(--verde); } .bolinha.parcial { background: var(--amarelo); }
+
+  main { flex: 1; padding: 0 20px 90px; min-width: 0; }
+  section h2 { font-size: 15px; font-weight: 600; margin: 22px 0 10px; display: flex; align-items: center; gap: 10px; }
+  section h2 .info { color: var(--suave); font-weight: 400; font-size: 13px; }
+  section h2 button { padding: 3px 10px; font-size: 12px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+
+  .card { position: relative; background: var(--painel); border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; user-select: none; }
+  .card.sel { border-color: var(--azul); }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #222; }
+  .card .rodape { padding: 5px 8px; font-size: 12px; display: flex; justify-content: space-between; color: var(--suave); }
+  .card .rodape b { color: var(--texto); font-weight: 500; }
+  .selos { position: absolute; top: 6px; left: 6px; display: flex; gap: 4px; }
+  .selo { background: rgba(0,0,0,.65); color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 4px; }
+  .estado { position: absolute; top: 6px; right: 6px; font-size: 11px; padding: 1px 7px; border-radius: 10px; font-weight: 600; }
+  .estado.pc { background: var(--verde); color: #062; }
+  .estado.parcial { background: var(--amarelo); color: #432; }
+  .marca { position: absolute; bottom: 34px; right: 6px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.3); display: grid; place-items: center; font-size: 13px; color: #fff; }
+  .card.sel .marca { background: var(--azul); border-color: var(--azul); }
+
+  .barra { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1d; border-top: 1px solid var(--borda); padding: 12px 20px; display: flex; gap: 16px; align-items: center; z-index: 6; }
+  .barra .total { font-size: 15px; } .barra .total b { font-size: 17px; }
+  .barra .livre { color: var(--suave); font-size: 13px; }
+  .barra .botoes { margin-left: auto; display: flex; gap: 8px; }
+
+  .vazio { padding: 80px 20px; text-align: center; color: var(--suave); font-size: 15px; }
+
+  .modal-fundo { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 20; padding: 16px; }
+  .modal-fundo.aberto { display: flex; }
+  .modal { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 22px; width: min(560px, 100%); max-height: 90vh; overflow: auto; }
+  .modal h3 { margin: 0 0 12px; font-size: 17px; }
+  .modal p { margin: 8px 0; color: #cfcfd5; }
+  .modal .linha { display: flex; gap: 8px; margin: 12px 0; }
+  .modal input { flex: 1; font: inherit; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--borda); background: #111; color: var(--texto); }
+  .modal .fim { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  .aviso { background: rgba(229,72,77,.12); border: 1px solid rgba(229,72,77,.4); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .progresso { height: 8px; background: #2a2a2f; border-radius: 4px; overflow: hidden; margin: 14px 0 6px; }
+  .progresso div { height: 100%; background: var(--azul); width: 0; transition: width .3s; }
+  .msg { color: var(--suave); font-size: 13px; min-height: 18px; word-break: break-all; }
+  .lista { font-size: 12px; color: var(--suave); max-height: 160px; overflow: auto; background: #111; border-radius: 6px; padding: 8px; margin-top: 8px; }
+
+  .modal.detalhe { width: min(1200px, 100%); }
+  .d-midia { display: flex; justify-content: center; background: #0c0c0d; border-radius: 8px; min-height: 200px; }
+  .d-midia img, .d-midia video { max-width: 100%; max-height: 72vh; display: block; border-radius: 8px; }
+  .d-midia img.provisoria { filter: blur(2px); opacity: .7; }
+  .detalhe table { width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 10px; }
+  .detalhe td { padding: 4px 6px; border-top: 1px solid var(--borda); }
+  .detalhe td.ok { color: var(--verde); } .detalhe td.nao { color: var(--suave); }
+  .detalhe a { color: var(--azul); cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fotos do iPhone</h1>
+  <span class="aparelho" id="aparelho">—</span>
+  <div class="espaco" id="espaco">
+    <div class="esp-topo"><b>Armazenamento do iPhone</b><span id="e-uso"></span></div>
+    <div class="esp-barra" id="e-barra" role="img"></div>
+    <div class="esp-legenda" id="e-leg"></div>
+  </div>
+  <div class="filtros">
+    <label>Mostrar</label>
+    <div class="grupo" data-filtro="status">
+      <button class="seg ativo" data-v="todos">Todos</button>
+      <button class="seg" data-v="iphone">Só no iPhone</button>
+      <button class="seg" data-v="pc">Já no PC</button>
+    </div>
+    <label>Tipo</label>
+    <div class="grupo" data-filtro="tipo">
+      <button class="seg ativo" data-v="todos">Todos</button>
+      <button class="seg" data-v="foto">Fotos</button>
+      <button class="seg" data-v="video">Vídeos</button>
+    </div>
+    <label>Tamanho</label>
+    <div class="grupo" data-filtro="min">
+      <button class="seg ativo" data-v="0">Qualquer</button>
+      <button class="seg" data-v="50">+50 MB</button>
+      <button class="seg" data-v="200">+200 MB</button>
+    </div>
+    <div class="acoes">
+      <button id="b-conferir" title="Marca como 'já no PC' o que achar numa pasta do computador (mesmo nome e tamanho)">Conferir com pasta do PC…</button>
+      <button id="b-ler">Ler iPhone de novo</button>
+    </div>
+  </div>
+</header>
+
+<div class="corpo">
+  <nav id="meses"></nav>
+  <main id="principal"><div class="vazio">Lendo o iPhone…</div></main>
+</div>
+
+<div class="barra">
+  <span class="total"><b id="s-n">0</b> selecionados · <b id="s-gb">0 GB</b></span>
+  <span class="livre" id="s-livre"></span>
+  <div class="botoes">
+    <button id="b-limpar">Limpar seleção</button>
+    <button id="b-visiveis">Selecionar o que está na tela</button>
+    <button id="b-copiar" class="primario" disabled>Copiar para o PC…</button>
+    <button id="b-apagar" class="perigo" disabled>Apagar do iPhone</button>
+  </div>
+</div>
+
+<!-- copiar -->
+<div class="modal-fundo" id="m-copiar"><div class="modal">
+  <h3>Copiar para o PC</h3>
+  <p id="c-resumo"></p>
+  <div class="linha"><input id="c-destino" placeholder="Pasta de destino"><button id="c-escolher">Escolher…</button></div>
+  <p class="msg">Dentro dela, uma subpasta por mês, com o mesmo nome do iPhone (ex.: 202407_a). Cada arquivo é conferido pelo tamanho depois de copiado.</p>
+  <div class="fim"><button data-fecha>Cancelar</button><button class="primario" id="c-ok">Copiar</button></div>
+</div></div>
+
+<!-- apagar -->
+<div class="modal-fundo" id="m-apagar"><div class="modal">
+  <h3>Apagar do iPhone</h3>
+  <p id="a-resumo"></p>
+  <div class="aviso">É definitivo: o que sai por aqui <b>não</b> vai para "Apagados recentemente" no iPhone. Só entram itens com cópia conferida no PC, e a conferência é refeita na hora de apagar.</div>
+  <p id="a-fora" class="msg"></p>
+  <div class="lista" id="a-pastas"></div>
+  <div class="fim"><button data-fecha>Cancelar</button><button class="perigo" id="a-ok">Apagar definitivamente</button></div>
+</div></div>
+
+<!-- conferir -->
+<div class="modal-fundo" id="m-conferir"><div class="modal">
+  <h3>Conferir com uma pasta do PC</h3>
+  <p>Procura, dentro da pasta e das subpastas, arquivos com o mesmo nome e o mesmo tamanho dos do iPhone. O que bater passa a contar como "já no PC".</p>
+  <div class="linha"><input id="f-pasta" placeholder="Pasta no PC"><button id="f-escolher">Escolher…</button></div>
+  <div class="fim"><button data-fecha>Cancelar</button><button class="primario" id="f-ok">Conferir</button></div>
+</div></div>
+
+<!-- progresso -->
+<div class="modal-fundo" id="m-tarefa"><div class="modal">
+  <h3 id="t-titulo">Trabalhando…</h3>
+  <div class="progresso"><div id="t-barra"></div></div>
+  <div class="msg" id="t-msg"></div>
+  <div id="t-fim" style="display:none">
+    <div id="t-res"></div>
+    <div class="fim"><button class="primario" data-fecha>OK</button></div>
+  </div>
+</div></div>
+
+<!-- detalhe -->
+<div class="modal-fundo" id="m-detalhe"><div class="modal detalhe">
+  <div class="d-midia" id="d-midia"></div>
+  <div class="msg" id="d-status"></div>
+  <table id="d-tab"></table>
+  <div class="fim"><button id="d-live" style="display:none">▶ Ver o movimento (Live)</button><button id="d-windows">Abrir no Windows</button><button data-fecha>Fechar</button></div>
+</div></div>
+
+<!-- app encerrado -->
+<div class="modal-fundo" id="m-fim"><div class="modal">
+  <h3>App encerrado</h3>
+  <p>A janela do app foi fechada. Pode fechar esta aba; para usar de novo, abra "Fotos do iPhone" no Menu Iniciar.</p>
+</div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+let itens = [], porId = {}, sel = new Set(), ultimoClique = null, visiveis = [];
+const filtro = { status: "todos", tipo: "todos", min: 0 };
+
+// iPhone conta em GB de 1000 — o mesmo aqui, para bater com Ajustes > Armazenamento.
+function tam(b) {
+  if (!b) return "0 GB";
+  if (b >= 1e9) return (b / 1e9).toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + " GB";
+  if (b >= 1e6) return (b / 1e6).toLocaleString("pt-BR", { maximumFractionDigits: b >= 1e8 ? 0 : 1 }) + " MB";
+  return Math.max(1, Math.round(b / 1e3)) + " KB";
+}
+function nomeMes(p) {
+  const m = /^(\d{4})(\d{2})_/.exec(p);
+  return m ? `${MESES[+m[2] - 1]} ${m[1]}` : p;
+}
+function dataCurta(d) { if (!d) return ""; const [a, h] = d.split(" "); const [y, m, dd] = a.split("-"); return `${dd}/${m}/${y.slice(2)} ${h.slice(0, 5)}`; }
+async function api(url, corpo) {
+  const r = await fetch(url, corpo === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  return r.json();
+}
+function abrir(id) { $(id).classList.add("aberto"); }
+document.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => b.closest(".modal-fundo").classList.remove("aberto"));
+
+function passa(g) {
+  if (filtro.status === "pc" && g.status !== "pc") return false;
+  if (filtro.status === "iphone" && g.status === "pc") return false;
+  if (filtro.tipo !== "todos" && g.tipo !== filtro.tipo) return false;
+  if (g.bytes < filtro.min * 1e6) return false;
+  return true;
+}
+
+function desenhar() {
+  const meses = {};
+  visiveis = [];
+  for (const g of itens) { if (!passa(g)) continue; (meses[g.pasta] ??= []).push(g); }
+  const pastas = Object.keys(meses).sort().reverse();
+  const nav = [], html = [];
+  for (const p of pastas) {
+    const l = meses[p];
+    const st = l.every(g => g.status === "pc") ? "pc" : l.some(g => g.status !== "iphone") ? "parcial" : "";
+    const b = l.reduce((s, g) => s + g.bytes, 0);
+    nav.push(`<a data-vai="m-${p}"><span class="bolinha ${st}"></span>${nomeMes(p)}<span class="n">${tam(b)}</span></a>`);
+    html.push(`<section id="m-${p}"><h2>${nomeMes(p)} <span class="info">${l.length} itens · ${tam(b)} · pasta ${p}</span>
+      <button data-mes="${p}">Selecionar mês</button></h2><div class="grade">`);
+    for (const g of l) {
+      visiveis.push(g.id);
+      const selos = [g.tipo === "video" ? "vídeo" : "", g.live ? "Live" : ""].filter(Boolean)
+        .map(s => `<span class="selo">${s}</span>`).join("");
+      const est = g.status === "pc" ? `<span class="estado pc" title="Cópia conferida no PC">✓ no PC</span>`
+        : g.status === "parcial" ? `<span class="estado parcial" title="Só parte dos arquivos está no PC">parcial</span>` : "";
+      html.push(`<div class="card${sel.has(g.id) ? " sel" : ""}" data-id="${g.id}">
+        <img loading="lazy" src="/mini/${g.capa}" alt="">
+        <div class="selos">${selos}</div>${est}<span class="marca">✓</span>
+        <div class="rodape"><span>${dataCurta(g.data)}</span><b>${tam(g.bytes)}</b></div></div>`);
+    }
+    html.push(`</div></section>`);
+  }
+  $("#meses").innerHTML = nav.join("");
+  $("#principal").innerHTML = html.join("") || `<div class="vazio">${itens.length ? "Nada com esses filtros." : "Nenhuma foto no iPhone."}</div>`;
+  barra();
+}
+
+function barra() {
+  let n = 0, b = 0, nApaga = 0, bApaga = 0;
+  for (const id of sel) { const g = porId[id]; if (!g) continue; n++; b += g.bytes; if (g.status === "pc") { nApaga++; bApaga += g.bytes; } }
+  $("#s-n").textContent = n; $("#s-gb").textContent = tam(b);
+  $("#s-livre").textContent = n ? (nApaga === n ? `Tudo já está no PC: libera ${tam(bApaga)} no iPhone`
+    : nApaga ? `${nApaga} já estão no PC e podem ser apagados (${tam(bApaga)})` : "Nenhum ainda está no PC — copie antes de apagar") : "";
+  $("#b-copiar").disabled = !n || nApaga === n;
+  $("#b-apagar").disabled = !nApaga;
+  $("#b-apagar").textContent = nApaga ? `Apagar do iPhone (${nApaga} · ${tam(bApaga)})` : "Apagar do iPhone";
+  desenharEspaco(bApaga);
+}
+
+// Barra de armazenamento: fotos já no PC · fotos só no iPhone · apps e sistema · livre.
+// Parte listrada = o que a seleção atual libera ao apagar.
+let espaco = null;
+const COR = { pc: "#28a86b", iphone: "#3d8bfd", outros: "#8a8a96" };
+function desenharEspaco(libera) {
+  if (!espaco) { $("#espaco").style.display = "none"; return; }
+  $("#espaco").style.display = "";
+  const soma = f => itens.filter(f).reduce((s, g) => s + g.bytes, 0);
+  const pc = soma(g => g.status === "pc"), so = soma(g => g.status !== "pc");
+  const usado = espaco.total - espaco.livre;
+  const outros = Math.max(0, usado - pc - so);
+  const pct = b => (100 * b / espaco.total) + "%";
+  const partes = [
+    { k: "pc", b: pc - libera, rot: "Fotos já no PC (podem sair)" },
+    { k: "pc", b: libera, rot: "Seleção: libera ao apagar", previa: true },
+    { k: "iphone", b: so, rot: "Fotos e vídeos só no iPhone" },
+    { k: "outros", b: outros, rot: "Apps, sistema e outros" },
+  ];
+  $("#e-barra").innerHTML = partes.filter(p => p.b > 0).map(p =>
+    `<div class="${p.previa ? "previa" : ""}" style="flex:0 0 ${pct(p.b)};background-color:${COR[p.k]}" title="${p.rot}: ${tam(p.b)}"></div>`).join("") +
+    `<div class="livre" style="flex:1 0 0" title="Livre: ${tam(espaco.livre)}"></div>`;
+  $("#e-barra").setAttribute("aria-label", `${tam(usado)} usados de ${tam(espaco.total)}, ${tam(espaco.livre)} livres`);
+  $("#e-uso").innerHTML = `${tam(usado)} usados de ${tam(espaco.total)} · <b style="color:var(--texto)">${tam(espaco.livre)} livres</b>` +
+    (espaco.estimado ? ` <span title="O iPhone só atualiza o espaço livre que informa ao PC quando o cabo é reconectado. Até lá, o app soma ao último número informado o que apagou.">(conta do app · ⓘ)</span>` : "") +
+    (libera ? ` → <b style="color:var(--texto)">${tam(espaco.livre + libera)}</b> depois de apagar a seleção` : "");
+  $("#e-leg").innerHTML = [
+    [COR.pc, "Fotos já no PC", pc], [COR.iphone, "Só no iPhone", so], [COR.outros, "Apps, sistema e outros", outros],
+  ].map(([c, r, b]) => `<span><i style="background:${c}"></i>${r} <b>${tam(b)}</b></span>`).join("") +
+    `<span><i class="livre"></i>Livre <b>${tam(espaco.livre)}</b></span>`;
+}
+
+function alternar(id, ligar) {
+  const on = ligar ?? !sel.has(id);
+  on ? sel.add(id) : sel.delete(id);
+  document.querySelector(`.card[data-id="${CSS.escape(id)}"]`)?.classList.toggle("sel", on);
+}
+
+$("#principal").addEventListener("click", e => {
+  const mes = e.target.closest("[data-mes]");
+  if (mes) {
+    const ids = itens.filter(g => g.pasta === mes.dataset.mes && passa(g)).map(g => g.id);
+    const todos = ids.every(i => sel.has(i));
+    ids.forEach(i => alternar(i, !todos)); barra(); return;
+  }
+  const c = e.target.closest(".card"); if (!c) return;
+  const id = c.dataset.id;
+  if (e.shiftKey && ultimoClique) {
+    const a = visiveis.indexOf(ultimoClique), z = visiveis.indexOf(id);
+    if (a >= 0 && z >= 0) { const [i, j] = a < z ? [a, z] : [z, a]; visiveis.slice(i, j + 1).forEach(x => alternar(x, true)); }
+  } else alternar(id);
+  ultimoClique = id; barra();
+});
+$("#principal").addEventListener("dblclick", e => {
+  const c = e.target.closest(".card"); if (!c) return;
+  const g = porId[c.dataset.id];  // os dois cliques do duplo já se anularam na seleção
+  mostrar(g, g.tipo === "video" ? g.video : g.capa);
+  $("#d-tab").innerHTML = `<tr><td colspan="3"><b>${nomeMes(g.pasta)}</b> · ${dataCurta(g.data)} · ${tam(g.bytes)}${g.editada ? " · tem versão editada" : ""}</td></tr>` +
+    g.arquivos.map(a => `<tr><td>${a.nome}</td><td>${tam(a.bytes)}</td>${a.pc
+      ? `<td class="ok">✓ <a data-abre="${encodeURIComponent(a.pc)}" title="${a.pc}">ver no PC</a></td>` : `<td class="nao">só no iPhone</td>`}</tr>`).join("");
+  abrir("#m-detalhe");
+});
+// Foto: a miniatura aparece na hora (borrada) e é trocada pelo original quando ele chega.
+// Vídeo: toca o original; se o navegador não tocar, sobra o "Abrir no Windows".
+let emTela = null;
+function mostrar(g, fid) {
+  emTela = fid;
+  const ehVideo = g.arquivos.find(a => a.id === fid)?.nome.match(/\.(mov|mp4|m4v)$/i);
+  const local = g.arquivos.find(a => a.id === fid)?.pc;
+  $("#d-live").style.display = g.live && !ehVideo ? "" : "none";
+  $("#d-status").textContent = local ? "" : "Trazendo o original do iPhone…";
+  if (ehVideo) {
+    $("#d-midia").innerHTML = `<video controls autoplay playsinline poster="/mini/${g.capa}?grande=1" src="/original/${fid}"></video>`;
+    const v = $("#d-midia video");
+    v.onloadeddata = () => { if (emTela === fid) $("#d-status").textContent = ""; };
+    v.onerror = () => { if (emTela === fid) $("#d-status").textContent = "O navegador não conseguiu tocar este vídeo. Use \"Abrir no Windows\"."; };
+  } else {
+    $("#d-midia").innerHTML = `<img class="provisoria" src="/mini/${g.capa}?grande=1" alt="">`;
+    const img = new Image();
+    img.onload = () => { if (emTela !== fid) return; $("#d-midia").innerHTML = ""; $("#d-midia").append(img); $("#d-status").textContent = ""; };
+    img.onerror = () => { if (emTela === fid) $("#d-status").textContent = "Não deu para abrir o original. Use \"Abrir no Windows\"."; };
+    img.src = `/original/${fid}`;
+  }
+  $("#d-live").onclick = () => mostrar(g, g.video);
+  $("#d-windows").onclick = () => { $("#d-status").textContent = "Abrindo no Windows…"; api("/api/abrir-no-windows", { id: fid }); };
+  abrir("#m-detalhe");
+}
+// Fechar o detalhe para o vídeo e para de esperar o original.
+$("#m-detalhe [data-fecha]").addEventListener("click", () => { emTela = null; $("#d-midia").innerHTML = ""; });
+$("#meses").addEventListener("click", e => { const a = e.target.closest("[data-vai]"); if (a) document.getElementById(a.dataset.vai)?.scrollIntoView({ block: "start" }); });
+
+$("#d-tab").addEventListener("click", e => { const a = e.target.closest("[data-abre]"); if (a) api("/api/abrir-pasta", { pasta: decodeURIComponent(a.dataset.abre) }); });
+
+document.querySelectorAll("[data-filtro]").forEach(gr => gr.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  gr.querySelectorAll("button").forEach(x => x.classList.toggle("ativo", x === b));
+  filtro[gr.dataset.filtro] = gr.dataset.filtro === "min" ? +b.dataset.v : b.dataset.v;
+  desenhar();
+}));
+$("#b-limpar").onclick = () => { sel.clear(); desenhar(); };
+$("#b-visiveis").onclick = () => { visiveis.forEach(i => alternar(i, true)); barra(); };
+
+// --- arquivos dos grupos selecionados
+function arquivosSel(soConferidos) {
+  const ids = []; let b = 0, n = 0;
+  for (const id of sel) {
+    const g = porId[id]; if (!g) continue;
+    if (soConferidos && g.status !== "pc") continue;
+    n++; b += g.bytes; g.arquivos.forEach(a => ids.push(a.id));
+  }
+  return { ids, b, n };
+}
+
+let memoria = {};
+try { memoria = JSON.parse(localStorage.getItem("fotos-iphone") || "{}"); } catch {}
+function lembrar(k, v) { memoria[k] = v; try { localStorage.setItem("fotos-iphone", JSON.stringify(memoria)); } catch {} }
+
+$("#b-copiar").onclick = () => {
+  const ainda = [...sel].filter(id => porId[id] && porId[id].status !== "pc");
+  const b = ainda.reduce((s, id) => s + porId[id].bytes, 0);
+  $("#c-resumo").textContent = `${ainda.length} itens (${tam(b)}) que ainda não estão no PC.`;
+  $("#c-destino").value = memoria.destino || "";
+  abrir("#m-copiar");
+};
+async function escolher(campo) {
+  const r = await api("/api/escolher-pasta", { inicial: $(campo).value || memoria.destino || "" });
+  if (r.pasta) $(campo).value = r.pasta;
+}
+$("#c-escolher").onclick = () => escolher("#c-destino");
+$("#f-escolher").onclick = () => escolher("#f-pasta");
+$("#c-ok").onclick = async () => {
+  const destino = $("#c-destino").value.trim(); if (!destino) return;
+  const ids = [];
+  for (const id of sel) { const g = porId[id]; if (g && g.status !== "pc") g.arquivos.filter(a => !a.pc).forEach(a => ids.push(a.id)); }
+  lembrar("destino", destino);
+  $("#m-copiar").classList.remove("aberto");
+  const r = await api("/api/copiar", { ids, destino });
+  if (r.ok === false && r.erro) return alert(r.erro);
+  acompanhar("Copiando para o PC");
+};
+
+$("#b-apagar").onclick = () => {
+  const { n, b } = arquivosSel(true);
+  const fora = [...sel].filter(id => porId[id] && porId[id].status !== "pc").length;
+  $("#a-resumo").innerHTML = `Apagar <b>${n} itens</b> do iPhone, liberando <b>${tam(b)}</b>.`;
+  $("#a-fora").textContent = fora ? `${fora} item(ns) selecionado(s) ainda sem cópia no PC ficam no iPhone.` : "";
+  const pastas = new Set();
+  for (const id of sel) { const g = porId[id]; if (g?.status === "pc") g.arquivos.forEach(a => pastas.add(a.pc.replace(/[\\/][^\\/]+$/, ""))); }
+  $("#a-pastas").innerHTML = "Cópias em:<br>" + [...pastas].sort().join("<br>");
+  abrir("#m-apagar");
+};
+$("#a-ok").onclick = async () => {
+  $("#m-apagar").classList.remove("aberto");
+  await api("/api/apagar", { ids: arquivosSel(true).ids });
+  acompanhar("Apagando do iPhone");
+};
+
+$("#b-conferir").onclick = () => { $("#f-pasta").value = memoria.destino || ""; abrir("#m-conferir"); };
+$("#f-ok").onclick = async () => {
+  const pasta = $("#f-pasta").value.trim(); if (!pasta) return;
+  $("#m-conferir").classList.remove("aberto");
+  const r = await api("/api/conferir", { pasta });
+  if (r.ok === false && r.erro) return alert(r.erro);
+  acompanhar("Conferindo com o PC");
+};
+$("#b-ler").onclick = async () => { await api("/api/ler", {}); acompanhar("Lendo o iPhone"); };
+
+function resultado(t) {
+  if (t.erro) return `<p class="aviso">${t.erro}</p>`;
+  const r = t.resultado || {}, l = [];
+  if (t.nome === "copiar") l.push(`<p>${r.copiados} arquivo(s) copiado(s) e conferido(s).${r.ja_estavam ? ` ${r.ja_estavam} já estavam lá.` : ""}</p>`);
+  if (t.nome === "apagar") {
+    l.push(`<p><b>${r.apagados}</b> arquivo(s) apagado(s) do iPhone · ${tam(r.bytes)} liberados.</p>`);
+    if (r.recusados?.length) l.push(`<p class="msg">${r.recusados.length} ficaram por não ter cópia boa no PC na hora.</p>`);
+  }
+  if (t.nome === "conferir") l.push(`<p>${r.conferidos} arquivo(s) do iPhone encontrados no PC.</p>`);
+  if (t.nome === "ler") l.push(`<p>${r.arquivos} arquivos lidos.</p>`);
+  if (r.erros?.length) l.push(`<div class="aviso">${r.erros.length} problema(s):</div><div class="lista">${r.erros.join("<br>")}</div>`);
+  return l.join("");
+}
+
+async function acompanhar(titulo, silencioso) {
+  $("#t-titulo").textContent = titulo; $("#t-fim").style.display = "none"; $("#t-barra").style.width = "0";
+  if (!silencioso) abrir("#m-tarefa");
+  for (;;) {
+    const e = await api("/api/estado"); const t = e.tarefa;
+    $("#t-msg").textContent = t.msg || "";
+    $("#t-barra").style.width = t.total ? (100 * t.feito / t.total) + "%" : "15%";
+    if (!t.rodando) {
+      await carregar();
+      if (t.nome === "apagar") sel.clear(), desenhar();
+      if (!silencioso || t.erro) { $("#t-res").innerHTML = resultado(t); $("#t-fim").style.display = ""; $("#t-barra").style.width = "100%"; abrir("#m-tarefa"); }
+      return;
+    }
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+
+async function carregar() {
+  const r = await api("/api/itens");
+  itens = r.itens; porId = Object.fromEntries(itens.map(g => [g.id, g])); espaco = r.espaco;
+  for (const id of [...sel]) if (!porId[id]) sel.delete(id);
+  $("#aparelho").innerHTML = r.conectado ? `<b class="on">● conectado</b>${r.lido_em ? " · lido às " + r.lido_em.slice(11, 16) : ""}` : `<b class="off">● iPhone não encontrado</b> — conecte o cabo, desbloqueie e toque em "Confiar"; depois, "Ler iPhone de novo". Se ele não aparece no Explorador de Arquivos, instale o app gratuito "Apple Devices" da Microsoft Store.`;
+  desenhar();
+}
+
+const ajustaTopo = () => document.documentElement.style.setProperty("--topo", document.querySelector("header").offsetHeight + "px");
+new ResizeObserver(ajustaTopo).observe(document.querySelector("header"));
+acompanhar("Lendo o iPhone", true);
+
+// Fechou a janela preta = servidor some. Duas falhas seguidas: a aba tenta se fechar
+// (o Chrome deixa porque foi aberta pelo app e não tem histórico); se não deixar, avisa.
+let falhas = 0;
+setInterval(async () => {
+  try {
+    const r = await fetch("/api/estado", { cache: "no-store" });
+    if (!r.ok) throw 0;
+    falhas = 0;
+  } catch {
+    if (++falhas === 2) {
+      window.close();
+      document.querySelectorAll(".modal-fundo.aberto").forEach(m => m.classList.remove("aberto"));
+      abrir("#m-fim");
+      document.title = "Fotos do iPhone (encerrado)";
+    }
+  }
+}, 2000);
+</script>
+</body>
+</html>
