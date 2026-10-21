@@ -8,7 +8,7 @@ Gratuito, código aberto, **funciona sem internet**. Windows 10 ou 11.
 ## Baixar e usar
 
 1. Em [**Releases**](https://github.com/marcelochellobr-lgtm/fotos-do-iphone/releases/latest), baixe
-   o arquivo `Fotos-do-iPhone-v1.0.zip`.
+   o arquivo `.zip` mais recente (ex.: `Fotos-do-iPhone-v1.0.1.zip`).
 2. Clique com o botão direito no arquivo → **Extrair tudo** → escolha uma pasta (ex.: Documentos).
 3. Conecte o iPhone no cabo, desbloqueie e toque em **Confiar**.
 4. Dê dois cliques em **`Abrir Fotos do iPhone.bat`**. A tela abre no navegador.

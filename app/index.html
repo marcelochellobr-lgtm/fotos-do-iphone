@@ -465,6 +465,14 @@ async function acompanhar(titulo, silencioso) {
   for (;;) {
     const e = await api("/api/estado"); const t = e.tarefa;
     $("#t-msg").textContent = t.msg || "";
+    // Leitura inicial sem a janela de progresso: mostra a pasta da vez no lugar da galeria.
+    // A primeira leitura depois de conectar o cabo pode levar minutos — o iPhone monta a lista devagar.
+    if (silencioso && t.rodando && !itens.length) {
+      const m = /\((\d+)\/(\d+)\)/.exec(t.msg || "");
+      $("#principal").innerHTML = `<div class="vazio">Lendo o iPhone… ${m ? `pasta ${m[1]} de ${m[2]}` : ""}
+        <div class="progresso" style="max-width:420px;margin:18px auto"><div style="width:${m ? 100 * m[1] / m[2] : 5}%"></div></div>
+        <div class="msg">Na primeira leitura depois de conectar o cabo, o iPhone pode levar alguns minutos para entregar a lista de fotos.<br>Das próximas vezes é rápido.</div></div>`;
+    }
     $("#t-barra").style.width = t.total ? (100 * t.feito / t.total) + "%" : "15%";
     if (!t.rodando) {
       await carregar();
