@@ -18,7 +18,7 @@ import sys
 import urllib.request
 import zipfile
 
-VERSAO = "1.0.1"
+VERSAO = "1.0.2"
 PYTHON = "3.13.3"
 # Versões fixas: o pacote sai sempre igual, e qualquer um pode conferir o que vai dentro.
 BIBLIOTECAS = [

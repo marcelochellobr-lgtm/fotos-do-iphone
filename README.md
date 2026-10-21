@@ -8,7 +8,7 @@ Gratuito, código aberto, **funciona sem internet**. Windows 10 ou 11.
 ## Baixar e usar
 
 1. Em [**Releases**](https://github.com/marcelochellobr-lgtm/fotos-do-iphone/releases/latest), baixe
-   o arquivo `.zip` mais recente (ex.: `Fotos-do-iPhone-v1.0.1.zip`).
+   o arquivo `.zip` mais recente (ex.: `Fotos-do-iPhone-v1.0.2.zip`).
 2. Clique com o botão direito no arquivo → **Extrair tudo** → escolha uma pasta (ex.: Documentos).
 3. Conecte o iPhone no cabo, desbloqueie e toque em **Confiar**.
 4. Dê dois cliques em **`Abrir Fotos do iPhone.bat`**. A tela abre no navegador.
@@ -71,8 +71,11 @@ python.org, confere a assinatura digital, põe as bibliotecas em versões fixas 
 
 ## Limitações
 
-Windows só (sem Mac). Um iPhone por vez. O espaço livre que o iPhone informa ao PC só atualiza ao
-reconectar o cabo; até lá o app soma o que apagou.
+Windows só (sem Mac). Um iPhone por vez.
+
+O espaço livre é o que o iPhone informa pelo cabo: o livre **agora**. O Ajustes do iPhone costuma
+mostrar mais, porque conta também o que o iOS libera sozinho quando precisa (caches, streaming,
+cópias do iCloud). Esse número só atualiza ao reconectar o cabo; até lá o app soma o que apagou.
 
 ---
 

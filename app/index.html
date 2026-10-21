@@ -299,15 +299,16 @@ function desenharEspaco(libera) {
   ];
   $("#e-barra").innerHTML = partes.filter(p => p.b > 0).map(p =>
     `<div class="${p.previa ? "previa" : ""}" style="flex:0 0 ${pct(p.b)};background-color:${COR[p.k]}" title="${p.rot}: ${tam(p.b)}"></div>`).join("") +
-    `<div class="livre" style="flex:1 0 0" title="Livre: ${tam(espaco.livre)}"></div>`;
+    `<div class="livre" style="flex:1 0 0" title="Livre agora: ${tam(espaco.livre)}"></div>`;
   $("#e-barra").setAttribute("aria-label", `${tam(usado)} usados de ${tam(espaco.total)}, ${tam(espaco.livre)} livres`);
-  $("#e-uso").innerHTML = `${tam(usado)} usados de ${tam(espaco.total)} · <b style="color:var(--texto)">${tam(espaco.livre)} livres</b>` +
+  $("#e-uso").innerHTML = `${tam(usado)} usados de ${tam(espaco.total)} · <b style="color:var(--texto)">${tam(espaco.livre)} livres agora</b>` +
+    ` <span title="Pelo cabo, o iPhone informa só o espaço livre neste instante. O Ajustes do iPhone costuma mostrar mais, porque conta também o que o iOS consegue liberar sozinho quando precisa (caches de apps, músicas e vídeos de streaming, cópias do iCloud).">(o Ajustes do iPhone pode mostrar mais · ⓘ)</span>` +
     (espaco.estimado ? ` <span title="O iPhone só atualiza o espaço livre que informa ao PC quando o cabo é reconectado. Até lá, o app soma ao último número informado o que apagou.">(conta do app · ⓘ)</span>` : "") +
     (libera ? ` → <b style="color:var(--texto)">${tam(espaco.livre + libera)}</b> depois de apagar a seleção` : "");
   $("#e-leg").innerHTML = [
     [COR.pc, "Fotos já no PC", pc], [COR.iphone, "Só no iPhone", so], [COR.outros, "Apps, sistema e outros", outros],
   ].map(([c, r, b]) => `<span><i style="background:${c}"></i>${r} <b>${tam(b)}</b></span>`).join("") +
-    `<span><i class="livre"></i>Livre <b>${tam(espaco.livre)}</b></span>`;
+    `<span><i class="livre"></i>Livre agora <b>${tam(espaco.livre)}</b></span>`;
 }
 
 function alternar(id, ligar) {
